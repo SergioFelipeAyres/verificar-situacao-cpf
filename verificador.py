@@ -33,12 +33,14 @@ for row in worksheet.iter_rows():
          time.sleep(1)
          
          #clica no captcha
-         pyautogui.click(x=612, y=529)
+         x,y = pyautogui.locateCenterOnScreen('botao_captcha.png')
+         pyautogui.click(x, y)
          
          time.sleep(2)
          
          #clica no botão de consultar
-         pyautogui.click(x=789, y=710)
+         x,y = pyautogui.locateCenterOnScreen('botao_consultar.png')
+         pyautogui.click(x, y)
          
          #Pega nome da pessoa
          nome_pessoa = driver.find_element(By.XPATH, '//*[@id="mainComp"]/div[2]/p/span[2]/b').text
@@ -55,7 +57,8 @@ for row in worksheet.iter_rows():
             
             time.sleep(1)
 
-            pyautogui.click(x=665, y=888)
+            x,y = pyautogui.locateCenterOnScreen('botao_imprimir.png')
+            pyautogui.click(x, y)
             
             time.sleep(1)
             
