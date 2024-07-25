@@ -17,7 +17,7 @@ driver = webdriver.Chrome()
 
 #Itera as linhas da tabela do excel
 for row in worksheet.iter_rows():
-   if row[0].value != None and row[0].value != "CPF":
+   if row[0].value != None and row[0].value != "CPF" and row[2].value == None:
       print(row[0].value)
       driver.get("https://servicos.receita.fazenda.gov.br/Servicos/CPF/ConsultaSituacao/ConsultaPublica.asp")
 
@@ -46,43 +46,46 @@ for row in worksheet.iter_rows():
          #Pega situação da pessoa e insere na planilha
          situacao_cpf = driver.find_element(By.XPATH, '//*[@id="mainComp"]/div[2]/p/span[4]/b').text
          print(situacao_cpf)
-         row[2].value = situacao_cpf
          
-         #Acessa tela de impressão
-         btn_print = driver.find_element(By.ID, "imgPrint")
-         btn_print.click()
-         
-         time.sleep(1)
-
-         pyautogui.click(x=665, y=888)
-         
-         time.sleep(1)
-         
-         #Se for o primeiro CPF da Lista ele vai precisar mudar o download padrão para o Save to PDF
-         if primeiro == 0:
-            pyautogui.click(x=1063, y=168)
-            keyboard.press_and_release('down')
+         #Se o CPF for regular, ele irá salvar o PDF
+         if situacao_cpf == "REGULAR":
+            #Acessa tela de impressão
+            btn_print = driver.find_element(By.ID, "imgPrint")
+            btn_print.click()
+            
             time.sleep(1)
-            primeiro = 1
-        
-         keyboard.press_and_release('enter')
-         time.sleep(1)
 
-         pyautogui.click(x=998, y=683)
+            pyautogui.click(x=665, y=888)
+            
+            time.sleep(1)
+            
+            #Se for o primeiro CPF da Lista ele vai precisar mudar o download padrão para o Save to PDF
+            if primeiro == 0:
+               pyautogui.click(x=1063, y=168)
+               keyboard.press_and_release('down')
+               time.sleep(1)
+               primeiro = 1
+         
+            keyboard.press_and_release('enter')
+            time.sleep(1)
 
-         time.sleep(1)
-         #Insere nome do arquivo
-         pyautogui.typewrite(nome_pessoa + ".pdf")
+            pyautogui.click(x=998, y=683)
 
-         time.sleep(1)
+            time.sleep(1)
+            #Insere nome do arquivo
+            pyautogui.typewrite(nome_pessoa + ".pdf")
+
+            time.sleep(1)
+            
+            #Salva arquivo
+            keyboard.press_and_release('enter')
+            
+            time.sleep(1)
+            
+            #fecha janela
+            pyautogui.click(x=1263, y=24)
          
-         #Salva arquivo
-         keyboard.press_and_release('enter')
-         
-         time.sleep(1)
-         
-         #fecha janela
-         pyautogui.click(x=1263, y=24)
+         row[2].value = situacao_cpf
          
 workbook.save(file)
 workbook.close()
